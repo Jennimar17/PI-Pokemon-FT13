@@ -42,7 +42,7 @@ const { Pokemon, Type } = sequelize.models;
 // Aca vendrian las relaciones
 Pokemon.belongsToMany(Type, {
   through: "pokemon_Type",
-  allowNull: false,
+  
   
 });
 
