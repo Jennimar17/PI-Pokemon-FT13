@@ -1,34 +1,25 @@
 const { Type } = require("../db");
-//traemos todas... ya esta e get
+const axios = require("axios");
+const { POKEMON_TYPE } = require("../../constants");
 
-//agregar pokemon
-/* function addType(request,response, next) {
-     const type = request.body;
-     return Type.create(type);
- } */
-
-async function addType(request, response, next) {
-  const type = request.body;
-  if(!type) return response.send({
-      error: 500,
-      message: 'Nada por aquí'
-  });
-
-  try {
-    const createdType = await Type.create(type);
-    return response.send(createdType);
-  } catch (error) {
-    next(error);
-  }
-}
 
 function getAllTypes(request, response, next) {
-  return Type.findAll()
-    .then((types) => response.send(types))
-    .catch((err) => next(err));
-}
+    const typeApi = axios.get(`${POKEMON_TYPE}`);
+    const PokeType = Type.findAll();
+    Promise.all([typeApi, PokeType])
+
+    .then((res) => {
+        let [typeApiResponse, pokeTypeResponse] = res;
+        return response.send(
+          pokeTypeResponse.concat(typeApiResponse.data.results)
+        );
+      })
+      .catch((err) => next(err));
+  }
+
+
 
 module.exports = {
   getAllTypes,
-  addType,
+ 
 };
